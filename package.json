@@ -1,24 +1,18 @@
 {
   "name": "lcnet",
-  "version": "0.0.4",
-  "description": "Network handler for Javascript and NodeJS",
+  "version": "1.0.0",
+  "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test",
+    "start": "node test"
   },
-  "author": "Leandro Coder <leandrocoder@gmail.com>",
-  "repository": "leandrocoder/npm-lcnet",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.2",
-    "http-server": "^0.11.1",
-    "net": "^1.0.2",
-    "request": "*",
+    "express": "^4.16.3",
+    "fs-watch-tree": "^0.2.5",
     "socket.io": "^2.1.1",
-    "socket.io-client": "*",
-    "udp": "^1.0.0"
-  },
-  "keywords": [
-    "network", "easy", "simple", "fast", "stable", "api", "udp", "tcp", "socket", "web", "socketio", "websocket"
-  ]
+    "websocket": "^1.0.26"
+  }
 }
