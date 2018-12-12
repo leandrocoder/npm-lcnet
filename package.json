@@ -4,8 +4,10 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "node test",
-    "start": "node test"
+    "test": "node examples/server",
+    "start": "node examples/server",
+    "server": "node examples/server",
+    "client": "node examples/client"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +15,8 @@
     "express": "^4.16.3",
     "fs-watch-tree": "^0.2.5",
     "socket.io": "^2.1.1",
-    "websocket": "^1.0.26"
+    "udp": "^1.0.0",
+    "websocket": "^1.0.26",
+    "ws": "^6.1.2"
   }
 }

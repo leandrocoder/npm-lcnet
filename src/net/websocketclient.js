@@ -1,11 +1,32 @@
-var WebSocketClientClass = require('websocket').client;
+//var WebSocketClientClass = require('websocket').client;
 
+
+const WebSocketClass = require('ws');
+
+
+
+module.exports = class WebSocketClient {
+
+    constructor(host, port) {
+        this.ws = new WebSocketClass('ws://' + host + ":" + port);
+    }
+
+    on (event, callback) {
+        this.ws.on(event, (...args) => callback(...args));
+    }
+
+    send(data)
+    {
+        this.ws.send(data);
+    }
+}
+
+
+/*
 module.exports = class WebSocketClient {
 
     constructor() {
         this.events = [];
-        this.connection = null;
-        this.connected = false;
         this.client = new WebSocketClientClass();
     }
 
@@ -59,3 +80,4 @@ module.exports = class WebSocketClient {
         if (this.connection) this.connection.send(JSON.stringify(obj));
     }
 }
+*/
