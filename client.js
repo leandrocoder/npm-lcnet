@@ -1,3 +1,4 @@
+/*
 const WSClient = require('./src/net/websocketclient');
 const stdin = require('./src/stdin');
 
@@ -23,4 +24,6 @@ function enableSTDInput()
 
 createClient();
 enableSTDInput();
+*/
 
+module.exports = require('./src/net/websocketclient');
