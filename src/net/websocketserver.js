@@ -1,14 +1,17 @@
 const WebSocketServerClass = require('websocket').server;
+const IServer = require('./iserver.js');
 const http = require('http');
 
-module.exports = class WebSocketServer {
+module.exports = class WebSocketServer extends IServer {
 
     constructor() {
+        super();
         this.server = null;
         this.wsServer = null;
         this.events = [];
         this.clients = [];
-        this.lastID = 0;
+		this.lastID = 0;
+		this.ip = this.getLocalIP();
     }
 
     /**
@@ -23,7 +26,7 @@ module.exports = class WebSocketServer {
 		}.bind(this));
 		
 		this.server.listen(port, function() { 
-			console.log("websocket start listening port", port);
+			console.log("websocket server " + this.ip + ":" + port);
 		}.bind(this));
 		
 		
