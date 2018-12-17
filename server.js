@@ -29,7 +29,7 @@ module.exports = class Server {
 				this.options.onConnect(client);
 			});
 			this.server.on("close", (client) => {
-				this.options.onConnect(client);
+				this.options.onClose(client);
 			});
 			this.server.on("message", (data, sender) => { 
 				this.options.onMessage(data, sender);

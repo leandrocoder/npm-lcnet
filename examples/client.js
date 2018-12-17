@@ -5,7 +5,7 @@ let ws = null;
 
 function createClient()
 {
-    ws = new WSClient('localhost', 5000);
+    ws = new WSClient('localhost', 5000, 'exampleclient');
     ws.on("message", function(data) {
         console.log("receive >", data);
     });
@@ -17,7 +17,6 @@ function enableSTDInput()
     stdin.on("*", function(cmd, args) { 
         ws.send(cmd) 
     });
-
 }
 
 createClient();

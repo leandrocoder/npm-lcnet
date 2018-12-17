@@ -1,6 +1,6 @@
 module.exports = class WebSocketClient {
     
-    constructor(host, port) {
+    constructor(host, port, identifier) {
         this.events = [];
         this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
         let address = `ws://${host}:${port}`;
@@ -34,6 +34,10 @@ module.exports = class WebSocketClient {
                 }
             }
         }
+
+        this.on('open', () => {
+            this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:identifier}}))
+        });
     }
     
     on (event, callback) {

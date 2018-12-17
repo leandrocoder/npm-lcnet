@@ -41,8 +41,6 @@ module.exports = class WebSocketServer {
 		  let index = this.clients.push(connection) - 1;
       let ip = connection.remoteAddresses[0];
 		  
-		  console.log("client connected!", ip);
-		  
       for (let i = 0; i < this.events.length; i++)
       {
           let e = this.events[i];
@@ -67,10 +65,13 @@ module.exports = class WebSocketServer {
       }
 
 		  connection.on('close', function(connection) {
-			
-        console.log("client disconnected!", ip);
-        
+		
         this.clients.splice(index, 1);
+        for (let i = 0; i < this.events.length; i++)
+        {
+          let e = this.events[i];
+          if (e.event == "close") e.callback(connection)
+        }
         
         }.bind(this));
       }.bind(this));
