@@ -11,12 +11,14 @@ module.exports = class Server extends EventEmitter {
 		this.port = port;
 		this.forwardMessages = forwardMessages;
 		this.server = null;
-
+		
 		// Init Server by Type
 		if (this.type == 'websocket') this.server = new SocketServer.WebSocket();
 		if (this.type == 'socketio')  this.server = new SocketServer.SocketIO();
-
+		
 		if (this.server != null) {
+			
+			this.ip = this.server.ip = this.server.getLocalIP();
 			// Define callbacks
 			this.server.on("connect", (client) => {
 				this.emit("connect", client);

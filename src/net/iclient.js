@@ -1,17 +1,12 @@
-module.exports = class IClient {
+const INet = require('./inet');
+
+module.exports = class IClient extends INet {
 
     constructor() {
+        super();
     }
 
-    init(ip, port) {
-
-    }
-
-    on(event, callback) {
-
-    }
-
-    send(obj) {
+    connect(address, port) {
 
     }
 }

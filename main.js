@@ -1,5 +1,2 @@
-module.exports = {
-    Server: require('./server.js'),
-    UDP: require('./udp.js'),
-    TCP: require('./tcp.js')
-}
+console.warn("Warning: Standart import of lcnet: websocket client\nFor more options see the docs.");
+module.exports = require('./src/net/websocketclient');

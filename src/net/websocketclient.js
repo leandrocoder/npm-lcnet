@@ -1,9 +1,13 @@
 module.exports = class WebSocketClient {
     
-    constructor(host, port, identifier) {
+    constructor(identifier) {
+        this.identifier = identifier;
+    }
+
+    connect(address, port)
+    {
         this.events = [];
         this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
-        let address = `ws://${host}:${port}`;
         this.ws = this.isBrowser == true ? new window.WebSocket(address) : new (require('ws'))(address);
 
         if (this.isBrowser == true)

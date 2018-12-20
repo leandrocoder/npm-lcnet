@@ -10,8 +10,8 @@ module.exports = class WebSocketServer extends IServer {
         this.wsServer = null;
         this.events = [];
         this.clients = [];
-		this.lastID = 0;
-		this.ip = this.getLocalIP();
+		    this.lastID = 0;
+		    this.ip = this.getLocalIP();
     }
 
     /**
@@ -67,7 +67,7 @@ module.exports = class WebSocketServer extends IServer {
           }
       }
 
-		  connection.on('close', function(connection) {
+		  connection.on('close', function(reasonCode, description) {
 		
         this.clients.splice(index, 1);
         for (let i = 0; i < this.events.length; i++)
@@ -93,14 +93,14 @@ module.exports = class WebSocketServer extends IServer {
      * 
      * @param {Object} obj Object
      */
-    send(obj, clientID) {
+    send(obj, client) {
         // broadcast message to all connected clients
         let json = typeof obj === 'string' ? obj : JSON.stringify(obj);
 
         if (this.clients.length > 0)
         {
           for (let i = this.clients.length - 1; i >= 0; i--) {
-            if (!clientID || (this.clients[i] != null && this.clients[i].id == clientID))
+            if (!client || (this.clients[i] != null && this.clients[i].id == client.id))
             {
 
               if (this.clients[i].connected == true)
@@ -109,7 +109,7 @@ module.exports = class WebSocketServer extends IServer {
               }
               else
               {
-                console.log("nao conectado");
+                console.log("client not connected");
                 this.clients[i].close();
                 this.clients.splice(i, 1);
               }
