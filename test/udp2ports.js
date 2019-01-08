@@ -9,6 +9,8 @@ STDIN.on("*", (data) => {
     udp.send(data, localhost, sendPort);
 })
 
+//udp.addListener(sendPort, )
+
 console.log(`Type something to send using port (${sendPort}) and receive by ${receivePort} :`);
 
 //{"type":"server","requestconnection":"Takeaway", "port":3001}
