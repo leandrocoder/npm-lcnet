@@ -1,4 +1,4 @@
-const Server = require('../server.js');
+const Server = require('../src/server.js');
 
 function onConnect(client) {
 

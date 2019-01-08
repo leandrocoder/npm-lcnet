@@ -1,4 +1,6 @@
-const SocketServer = require('./src/net/socketserver');
+const SocketServer = require('./socketserver');
+const NetUtils = require('./utils');
+
 const EventEmitter = require('events');
 
 module.exports = class Server extends EventEmitter {
@@ -18,7 +20,7 @@ module.exports = class Server extends EventEmitter {
 		
 		if (this.server != null) {
 			
-			this.ip = this.server.ip = this.server.getLocalIP();
+			this.ip = this.server.ip = NetUtils.getLocalIP();
 			// Define callbacks
 			this.server.on("connect", (client) => {
 				this.emit("connect", client);
@@ -28,10 +30,7 @@ module.exports = class Server extends EventEmitter {
 			});
 			this.server.on("message", (data, sender) => { 
 				this.emit("message", data, sender);
-				if (this.forwardMessages == true)
-				{
-					this.send(data);
-				}
+				if (this.forwardMessages == true) this.send(data);
 			});
 
 			this.server.init(port);

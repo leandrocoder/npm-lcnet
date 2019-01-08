@@ -2,6 +2,8 @@ const WebSocketServerClass = require('websocket').server;
 const IServer = require('./iserver.js');
 const http = require('http');
 
+const NetUtils = require('./utils');
+
 module.exports = class WebSocketServer extends IServer {
 
     constructor() {
@@ -11,7 +13,7 @@ module.exports = class WebSocketServer extends IServer {
         this.events = [];
         this.clients = [];
 		    this.lastID = 0;
-		    this.ip = this.getLocalIP();
+		    this.ip = NetUtils.getLocalIP();
     }
 
     /**

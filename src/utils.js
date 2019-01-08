@@ -1,10 +1,37 @@
-const EventEmitter = require('events');
+class Utils {
 
-module.exports = class INet extends EventEmitter {
+    checkPort(port, callback)
+    {
+        if (!callback) return;
 
-    constructor() {
-        super();
+        // node
+        if (typeof window === 'undefined')
+        {
+            var net = require('net');
+            var server = net.createServer();
+            
+            server.once('error', function(err) {
+                if (err.code === 'EADDRINUSE') {
+                    // port is currently in use
+                }
+                callback(false);
+            });
+            
+            server.once('listening', function() {
+                // close the server if listening doesn't fail
+                server.close();
+                callback(true);
+            });
+            
+            server.listen(port);
+        }
+        else
+        {
+            // todo fix it
+            callback(true);
+        }
     }
+
 
     getBroadcastIP()
     {
@@ -62,11 +89,16 @@ module.exports = class INet extends EventEmitter {
         return allInterfaces ? result : result[0];
     }
 
-    on(event, callback) {
+}
 
-    }
+var instance = new Utils();
 
-    send(obj) {
-
-    }
+if (typeof module !== 'undefined')
+{
+    module.exports = instance;
+}
+else
+{
+    if (!window.lcnet) window.lcnet = {};
+    if (!window.lcnet.utils) window.lcnet.utils = instance;
 }
