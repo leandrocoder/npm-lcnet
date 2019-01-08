@@ -1,7 +1,6 @@
-const util = require('./src/utils');
-const NetManager = require('./src/netmanager');
+const { NetUtils, NetManager } = require('./server');
 
-let ip = util.getLocalIP();
+let ip = NetUtils.getLocalIP();
 
 console.log(ip);
 

@@ -1,6 +1,7 @@
-const LCNetServer = require('./server');
 const UDP = require('./udp');
 const EventEmitter = require('events');
+const NetUtils = require('./utils');
+const WebSocketServer = require('./websocketserver');
 
 class Room  extends EventEmitter
 {
@@ -45,6 +46,51 @@ class Room  extends EventEmitter
         return index >= 0;
     }
 }
+
+
+class Server extends EventEmitter {
+	
+	constructor(type, port, forwardMessages) {
+
+		super();
+
+		this.type = type.toLowerCase().trim();
+		this.port = port;
+		this.forwardMessages = forwardMessages;
+		this.server = null;
+		
+		// Init Server by Type
+		if (this.type == 'websocket') this.server = new WebSocketServer();
+		
+		if (this.server != null) {
+			
+			this.ip = this.server.ip = NetUtils.getLocalIP();
+			// Define callbacks
+			this.server.on("connect", (client) => {
+				this.emit("connect", client);
+			});
+			this.server.on("close", (client) => {
+				this.emit("close", client);
+			});
+			this.server.on("message", (data, sender) => { 
+				this.emit("message", data, sender);
+				if (this.forwardMessages == true) this.send(data);
+			});
+
+			this.server.init(port);
+		}
+		else {
+			console.error("Error: Server type unknow > ", this.type);
+		}
+	}
+
+	send(data, clientID)
+	{
+		this.server.send(data, clientID);
+	}
+}
+
+
 
 module.exports = class NetManager extends EventEmitter
 {
@@ -111,7 +157,7 @@ module.exports = class NetManager extends EventEmitter
             }
             else if (config.type == 'websocket')
             {
-                let s = new LCNetServer(config.type, config.port);
+                let s = new Server(config.type, config.port);
                 s.config = config;
                 s.id = self.server.length;
                 s.clients = [];
