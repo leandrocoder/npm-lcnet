@@ -26,6 +26,9 @@ class Room  extends EventEmitter
 
         client.room = this.name != 'all' ? this : null;
         this.clients.push(client);
+
+        console.log(client.name, "join room", this.name);
+
         return true;
     }
 
@@ -45,6 +48,15 @@ class Room  extends EventEmitter
         client.room = null;
         return index >= 0;
     }
+
+    send(obj)
+	{
+        if (typeof obj !== 'string') obj = JSON.stringify(obj);
+        for (let i = 0; i < this.clients.length; i++)
+        {
+            this.clients[i].send(obj);
+        }
+	}
 }
 
 
@@ -84,9 +96,10 @@ class Server extends EventEmitter {
 		}
 	}
 
-	send(data, clientID)
+	send(obj, clientID)
 	{
-		this.server.send(data, clientID);
+        if (typeof obj !== 'string') obj = JSON.stringify(obj);
+		this.server.send(obj, clientID);
 	}
 }
 
@@ -271,10 +284,14 @@ module.exports = class NetManager extends EventEmitter
                     console.log('name???', s.name, json.requestconnection);
                     if (s.name == json.requestconnection)
                     {
-                        let response = {type:'connectiondata',  data:{type:s.type, host:s.ip, port:s.port}};
-                        console.log("CONNECTION DATA =================");
-                        console.log(response);
-                        console.log(sender);
+                        let response = {
+                            type:'connectiondata',  
+                            data:{
+                                type:s.type, 
+                                host:s.ip, 
+                                port:s.port
+                            }
+                        };
                         server.send(response);
                     }
                 }

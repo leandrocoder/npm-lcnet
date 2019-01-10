@@ -96,9 +96,8 @@ module.exports = class WebSocketServer extends IServer {
      * @param {Object} obj Object
      */
     send(obj, client) {
-        // broadcast message to all connected clients
-        let json = typeof obj === 'string' ? obj : JSON.stringify(obj);
-
+      if (typeof obj !== 'string') obj = JSON.stringify(obj);
+      
         if (this.clients.length > 0)
         {
           for (let i = this.clients.length - 1; i >= 0; i--) {
@@ -107,7 +106,7 @@ module.exports = class WebSocketServer extends IServer {
 
               if (this.clients[i].connected == true)
               {
-                this.clients[i].send(json);
+                this.clients[i].send(obj);
               }
               else
               {

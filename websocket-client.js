@@ -1,1 +1,1 @@
-module.exports = require('./src/net/websocketclient');
+module.exports = require('./src/websocketclient');

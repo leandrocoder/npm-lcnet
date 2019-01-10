@@ -2,11 +2,11 @@ module.exports = class WebSocketClient {
     
     constructor(identifier) {
         this.identifier = identifier;
+        this.events = [];
     }
 
     connect(address, port)
     {
-        this.events = [];
         this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
         this.ws = this.isBrowser == true ? new window.WebSocket(address) : new (require('ws'))(address);
 
@@ -40,7 +40,8 @@ module.exports = class WebSocketClient {
         }
 
         this.on('open', () => {
-            this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:identifier}}))
+            if (this.identifier)
+                this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:this.identifier}}))
         });
     }
     
@@ -53,9 +54,15 @@ module.exports = class WebSocketClient {
         }
     }
     
-    send(data)
+    send(obj)
     {
-        this.ws.send(data);
+        if (typeof obj !== 'string') obj = JSON.stringify(obj);
+        this.ws.send(obj);
+    }
+
+    joinRoom(name, password)
+    {
+        this.ws.send(JSON.stringify({joinroom:name, password:password}));
     }
 }
 
