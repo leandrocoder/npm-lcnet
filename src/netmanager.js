@@ -295,7 +295,6 @@ module.exports = class NetManager extends EventEmitter
                         server.send(response);
                     }
                 }
-                
             }
         }
         
