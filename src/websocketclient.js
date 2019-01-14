@@ -1,14 +1,16 @@
 module.exports = class WebSocketClient {
     
-    constructor(identifier) {
+    constructor(address, identifier) {
         this.identifier = identifier;
         this.events = [];
+        this.address = address;
+        this.connect();
     }
 
-    connect(address, port)
+    connect()
     {
         this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
-        this.ws = this.isBrowser == true ? new window.WebSocket(address) : new (require('ws'))(address);
+        this.ws = this.isBrowser == true ? new window.WebSocket(this.address) : new (require('ws'))(this.address);
 
         if (this.isBrowser == true)
         {
@@ -40,6 +42,7 @@ module.exports = class WebSocketClient {
         }
 
         this.on('open', () => {
+            
             if (this.identifier)
                 this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:this.identifier}}))
         });
