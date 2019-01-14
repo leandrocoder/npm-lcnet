@@ -1,3 +1,5 @@
+const Utils = require('./src/utils');
+
 module.exports = class FileServe {
 
     constructor(servePath, port)
@@ -15,6 +17,8 @@ module.exports = class FileServe {
         app.listen(port, function() {
             console.log("FileServe @ " + port);
         });
+        
+        this.url = "http://" + Utils.getLocalIP() + ":" + port + "/";
     }
     
 }

@@ -4,11 +4,13 @@ module.exports = class WebSocketClient {
         this.identifier = identifier;
         this.events = [];
         this.address = address;
+        this.connectTimeout = null;
         this.connect();
     }
 
     connect()
     {
+
         this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
         this.ws = this.isBrowser == true ? new window.WebSocket(this.address) : new (require('ws'))(this.address);
 
@@ -46,6 +48,23 @@ module.exports = class WebSocketClient {
             if (this.identifier)
                 this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:this.identifier}}))
         });
+
+
+        this.on('error', () => {
+            this.__reconnect();
+        });
+
+        this.on('close', () => {
+            this.__reconnect();
+        });
+    }
+
+    __reconnect()
+    {
+        clearTimeout(this.connectTimeout);
+        this.connectTimeout = setTimeout(() => {
+            this.connect();
+        }, 1000);
     }
     
     on (event, callback) {
