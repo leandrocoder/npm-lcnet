@@ -27,10 +27,25 @@ module.exports = class WebSocketClient extends EventEmitter {
             }
         }
 
+        let addEventListener = (event, callback) => {
+            if (!callback) return;
+
+            if (this.isBrowser == true) {
+                this.ws["on" + event] = (e) => { callback(e.data); }
+            } else {
+                this.ws.on(event, (...args) => { callback(...args); });
+            }
+        }
+
         addEventBridge("open");
         addEventBridge("close");
         addEventBridge("error");
         addEventBridge("message");
+
+        addEventListener("open", () => {
+            if (this.identifier)
+                this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:this.identifier}}))
+        })
     }
     
     send(obj)
