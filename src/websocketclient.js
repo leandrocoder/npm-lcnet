@@ -1,3 +1,52 @@
+const EventEmitter = require('events');
+
+module.exports = class WebSocketClient extends EventEmitter {
+    
+    constructor(address, identifier) {
+
+        super();
+
+        this.identifier = identifier;
+        this.address = address;
+        this.ws = null;
+        this.connect();
+    }
+
+
+    connect()
+    {
+        this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
+        this.ws = this.isBrowser == true ? new window.WebSocket(this.address) : new (require('ws'))(this.address);
+
+        let addEventBridge = (event) =>
+        {
+            if (this.isBrowser == true) {
+                this.ws["on" + event] = (e) => { this.emit(event, e.data); }
+            } else {
+                this.ws.on(event, (...args) => { this.emit(event, ...args); });
+            }
+        }
+
+        addEventBridge("open");
+        addEventBridge("close");
+        addEventBridge("error");
+        addEventBridge("message");
+    }
+    
+    send(obj)
+    {
+        if (typeof obj !== 'string') obj = JSON.stringify(obj);
+        this.ws.send(obj);
+    }
+
+    joinRoom(name, password)
+    {
+        this.ws.send(JSON.stringify({joinroom:name, password:password}));
+    }
+}
+
+
+/*
 module.exports = class WebSocketClient {
     
     constructor(address, identifier) {
@@ -31,6 +80,15 @@ module.exports = class WebSocketClient {
                 {
                     let e = this.events[i];
                     if (e.event == 'close' && e.callback) e.callback();
+                }
+            }
+
+            this.ws.onerror = (event) => {
+                let data = event.data;
+                for (let i = 0; i < this.events.length; i++)
+                {
+                    let e = this.events[i];
+                    if (e.event == 'error' && e.callback) e.callback();
                 }
             }
 
@@ -85,67 +143,6 @@ module.exports = class WebSocketClient {
     joinRoom(name, password)
     {
         this.ws.send(JSON.stringify({joinroom:name, password:password}));
-    }
-}
-
-
-/*
-var WebSocketClientClass = require('websocket').client;
-module.exports = class WebSocketClient {
-
-    constructor() {
-        this.events = [];
-        this.client = new WebSocketClientClass();
-    }
-
-    tryConnect(ip, port) {
-        if (this.connected == false)
-            this.client.connect(`ws://${ip}:${port}/`);
-    }
-
-    keepConnection(ip, port) {
-        this.tryConnect(ip, port);
-        setInterval(function() {
-            this.tryConnect(ip, port);
-        }.bind(this), 2000);
-    }
-
-    init(ip, port) {
-        this.client.on('connect', function(connection) {
-
-            console.log("connected!");
-            this.connected = true;
-            this.connection = connection;
-            
-            connection.on('close', function() { 
-                console.log("disconnected :(");
-                this.connected = false;
-            }.bind(this));
-
-            for (let i = 0; i < this.events.length; i++)
-            {
-                let e = this.events[i];
-                connection.on(e.event, function(message) {
-                    let data = message.utf8Data;
-                    try {
-                    data = JSON.parse(data);
-                    } catch (err) {}
-                    if (e.callback != null) e.callback(data);
-                }.bind(this));
-            }
-
-        }.bind(this));
-
-        this.keepConnection(ip, port);
-        
-    }
-
-    on(event, callback) {
-        this.events.push({event:event, callback:callback});
-    }
-
-    send(obj) {
-        if (this.connection) this.connection.send(JSON.stringify(obj));
     }
 }
 */

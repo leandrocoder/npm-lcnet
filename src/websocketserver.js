@@ -46,6 +46,7 @@ module.exports = class WebSocketServer extends IServer {
 		  let index = this.clients.push(connection) - 1;
       let ip = connection.remoteAddresses[0];
       if (ip.indexOf("::ffff:") == 0) ip = ip.substr("::ffff:".length);
+      if (ip == "::1") ip = '127.0.0.1';
       connection.ip = ip;
       console.log('connection from', connection.ip);
 		  
