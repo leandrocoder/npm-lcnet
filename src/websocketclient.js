@@ -50,6 +50,7 @@ module.exports = class WebSocketClient extends EventEmitter {
     
     send(obj)
     {
+        if (!this.ws || this.ws.readyState != 1) return;
         if (typeof obj !== 'string') obj = JSON.stringify(obj);
         this.ws.send(obj);
     }
