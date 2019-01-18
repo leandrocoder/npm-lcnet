@@ -22,68 +22,72 @@ module.exports = class WebSocketServer extends IServer {
      */
     init(port) {
         this.clients = [];
-		this.server = http.createServer(function(request, response) {
-		  // process HTTP request. Since we're writing just WebSockets
-		  // server we don't have to implement anything.
-		}.bind(this));
-		
-		this.server.listen(port, function() { 
-			console.log("websocket server " + this.ip + ":" + port);
-		}.bind(this));
-		
-		
-		this.wsServer = new WebSocketServerClass({
-		  httpServer: this.server
-		});
-		
-		// WebSocket server
-		this.wsServer.on('request', function(request) {
-			
-		  let connection = request.accept(null, request.origin);
-      connection.id = this.lastID;
-      this.lastID++;
-		  
-		  let index = this.clients.push(connection) - 1;
-      let ip = connection.remoteAddresses[0];
-      if (ip.indexOf("::ffff:") == 0) ip = ip.substr("::ffff:".length);
-      if (ip == "::1") ip = '127.0.0.1';
-      connection.ip = ip;
-      console.log('connection from', connection.ip);
-		  
-      for (let i = 0; i < this.events.length; i++)
-      {
-          let e = this.events[i];
-          connection.on(e.event, function(message) {
-            let data = null;
+        this.server = http.createServer(function(request, response) {
+          // process HTTP request. Since we're writing just WebSockets
+          // server we don't have to implement anything.
+        }.bind(this));
+        
+        this.server.listen(port, function() { 
+          console.log("websocket server " + this.ip + ":" + port);
+        }.bind(this));
+        
+        
+        this.wsServer = new WebSocketServerClass({
+          httpServer: this.server
+        });
 
-            if (message.type == 'binary')
-            {
-              data = message.binaryData.toString();
-            }
-            else
-            {
-                data = message.utf8Data;
-            }
-  
-            if (e.callback != null && data != null) e.callback(data, connection);
-          }.bind(this));
-
-          if (e.event == "connect") {
-            e.callback(connection);
-          }
-      }
-
-		  connection.on('close', function(reasonCode, description) {
-		
-        this.clients.splice(index, 1);
+        this.wsServer.on("connect", () => {
+          this.on("open", this.emit('open', this));
+        })
+    
+      // WebSocket server
+      this.wsServer.on('request', function(request) {
+        
+        let connection = request.accept(null, request.origin);
+        connection.id = this.lastID;
+        this.lastID++;
+        
+        let index = this.clients.push(connection) - 1;
+        let ip = connection.remoteAddresses[0];
+        if (ip.indexOf("::ffff:") == 0) ip = ip.substr("::ffff:".length);
+        if (ip == "::1") ip = '127.0.0.1';
+        connection.ip = ip;
+        console.log('connection from', connection.ip);
+        
         for (let i = 0; i < this.events.length; i++)
         {
-          let e = this.events[i];
-          if (e.event == "close") e.callback(connection)
+            let e = this.events[i];
+            connection.on(e.event, function(message) {
+              let data = null;
+
+              if (message.type == 'binary')
+              {
+                data = message.binaryData.toString();
+              }
+              else
+              {
+                  data = message.utf8Data;
+              }
+    
+              if (e.callback != null && data != null) e.callback(data, connection);
+            }.bind(this));
+
+            if (e.event == "connect") {
+              e.callback(connection);
+            }
         }
-        
+
+        connection.on('close', function(reasonCode, description) {
+      
+          this.clients.splice(index, 1);
+          for (let i = 0; i < this.events.length; i++)
+          {
+            let e = this.events[i];
+            if (e.event == "close") e.callback(connection)
+          }
+          
+          }.bind(this));
         }.bind(this));
-      }.bind(this));
     }
 
     /**

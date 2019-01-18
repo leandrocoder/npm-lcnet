@@ -77,7 +77,7 @@ class Server extends EventEmitter {
 		if (this.server != null) {
 			
 			this.ip = this.server.ip = NetUtils.getLocalIP();
-			// Define callbacks
+            // Define callbacks
 			this.server.on("connect", (client) => {
 				this.emit("connect", client);
 			});
@@ -89,7 +89,7 @@ class Server extends EventEmitter {
 				if (this.forwardMessages == true) this.send(data);
 			});
 
-			this.server.init(port);
+            this.server.init(port);
 		}
 		else {
 			console.error("Error: Server type unknow > ", this.type);
@@ -199,6 +199,8 @@ module.exports = class NetManager extends EventEmitter
                 s.on("connect", (client) => self.onConnect(s, client))
                 s.on("close", (client) => self.onClose(s, client))
                 s.on("message", (data, sender) => self.onMessage(s, data, sender))
+
+                self.emit("create", s);
                 self.server.push(s);
             }
         }
