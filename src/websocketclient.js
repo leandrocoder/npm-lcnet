@@ -5,25 +5,31 @@ module.exports = class WebSocketClient extends EventEmitter {
     constructor(address, identifier) {
 
         super();
-
         this.identifier = identifier;
         this.address = address;
         this.ws = null;
         this.connect();
     }
 
-
     connect()
     {
         this.isBrowser = (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined');
         this.ws = this.isBrowser == true ? new window.WebSocket(this.address) : new (require('ws'))(this.address);
 
-        let addEventBridge = (event) =>
+        let addEventBridge = (event, internalCallback) =>
         {
             if (this.isBrowser == true) {
-                this.ws["on" + event] = (e) => { this.emit(event, e.data); }
+                this.ws["on" + event] = (e) => { 
+                    let data = e && e.data ? e.data : null;
+                    if (internalCallback) internalCallback(data);
+                    this.emit(event, data);
+                }
             } else {
-                this.ws.on(event, (...args) => { this.emit(event, ...args); });
+                this.ws.on(event, (...args) => { 
+                    this.emit(event, ...args); 
+                    if (internalCallback) internalCallback(...args);
+                    this.emit(event, ...args);
+                });
             }
         }
 
@@ -37,15 +43,15 @@ module.exports = class WebSocketClient extends EventEmitter {
             }
         }
 
-        addEventBridge("open");
+        addEventBridge("open", () => {
+            this.emit("open");
+            if (this.identifier)
+                this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:this.identifier}}))
+        });
+        
         addEventBridge("close");
         addEventBridge("error");
         addEventBridge("message");
-
-        addEventListener("open", () => {
-            if (this.identifier)
-                this.ws.send(JSON.stringify({type:'internalhandshake', data:{identifier:this.identifier}}))
-        })
     }
     
     send(obj)
