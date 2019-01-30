@@ -1,3 +1,6 @@
+const fs = require('fs');
+const http = require('http');
+
 class Utils {
 
     checkPort(port, callback)
@@ -87,6 +90,67 @@ class Utils {
 
         let result = ip.length == 0 ? ['127.0.0.1'] : ip;
         return allInterfaces ? result : result[0];
+    }
+
+
+    downloadAndCheck(from, to, callback)
+    {
+        this.download(from, to, (e) => {
+            if (e)
+            {
+                if (callback) callback(e);
+                return;
+            }
+
+            setTimeout(() => {
+                
+                this.generateChecksum(to, (err, sum) => {
+                    if (err)
+                    {
+                        if (callback) callback(err);
+                        return;
+                    }
+
+                    if (callback) callback(null, sum);
+                })
+
+            }, 200);
+        });
+    }
+
+    download(from, to, callback)
+    {
+        if (from.indexOf("www") == 0 || from.indexOf("http") == 0)
+        {
+            // console log
+            let file = fs.createWriteStream(to);
+            http.get(from, (response) => {
+                response.pipe(file);
+                if (callback) callback();
+            }).on("error", (e) => {
+                console.error(`Got error: ${e.message}`);
+                if (callback) callback(e);
+            });
+        }
+        else
+        {
+            let _from = from.replace("file:///", "");
+            try {
+                fs.copyFile(_from, to, (err) => {
+                    if (callback) callback(err);
+                })
+            } catch (err) {
+                if (callback) callback(err);
+            }
+        }        
+    }
+
+    generateChecksum(filePath, callback)
+    {       
+        const md5File = require('md5-file')
+        md5File(filePath, (err, hash) => {
+            if (callback) callback(err, hash);
+        })
     }
 
 }
