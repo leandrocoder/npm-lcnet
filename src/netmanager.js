@@ -253,7 +253,6 @@ module.exports = class NetManager extends EventEmitter
     onMessage(server, data, sender)
     {
         console.log(server.config.type, "message >", data);
-
         console.log("type of message = ", typeof data);
 
         let json = null;
