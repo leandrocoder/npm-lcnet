@@ -26,9 +26,6 @@ class Room  extends EventEmitter
 
         client.room = this.name != 'all' ? this : null;
         this.clients.push(client);
-
-        console.log(client.name, "join room", this.name);
-
         return true;
     }
 
@@ -163,7 +160,6 @@ module.exports = class NetManager extends EventEmitter
                 s.server.type = 'udp';
                 s.server.ip = s.getLocalIP();
                 s.addListener(config.port, (data, sender) => {
-                    console.log("remote:", sender);
                     self.onMessage(s, data, sender)
                 })
                 self.server.push(s);
@@ -246,15 +242,11 @@ module.exports = class NetManager extends EventEmitter
     {
         client.name = "Guest " + client.id;
         server.defaultRoom.addClient(client);
-        console.log("connect: client", client.id);
         this.emit("connect", server, client);
     }
     
     onMessage(server, data, sender)
     {
-        console.log(server.config.type, "message >", data);
-        console.log("type of message = ", typeof data);
-
         let json = null;
         try {
             json = JSON.parse(data);
@@ -282,7 +274,6 @@ module.exports = class NetManager extends EventEmitter
                 for (let i = 0; i < this.server.length; i++)   
                 {
                     let s = this.server[i];
-                    console.log('name???', s.name, json.requestconnection);
                     if (s.name == json.requestconnection)
                     {
                         let response = {

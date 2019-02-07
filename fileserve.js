@@ -15,7 +15,7 @@ module.exports = class FileServe {
         
         port = port || 5000;
         app.listen(port, function() {
-            console.log("FileServe @ " + port);
+            //console.log("FileServe @ " + port);
         });
         
         this.url = "http://" + Utils.getLocalIP() + ":" + port + "/";

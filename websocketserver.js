@@ -28,7 +28,7 @@ module.exports = class WebSocketServer extends IServer {
         }.bind(this));
         
         this.server.listen(port, function() { 
-          console.log("websocket server " + this.ip + ":" + port);
+          //console.log("websocket server " + this.ip + ":" + port);
         }.bind(this));
         
         
@@ -52,7 +52,6 @@ module.exports = class WebSocketServer extends IServer {
         if (ip.indexOf("::ffff:") == 0) ip = ip.substr("::ffff:".length);
         if (ip == "::1") ip = '127.0.0.1';
         connection.ip = ip;
-        console.log('connection from', connection.ip);
         
         for (let i = 0; i < this.events.length; i++)
         {
@@ -118,7 +117,6 @@ module.exports = class WebSocketServer extends IServer {
               }
               else
               {
-                console.log("client not connected");
                 this.clients[i].close();
                 this.clients.splice(i, 1);
               }

@@ -164,15 +164,15 @@ class Utils {
            var workerProcess = child_process.spawn('wget', ['-O', to, from]);
 
            workerProcess.stdout.on('data', function (data) {
-             console.log('stdout: ' + data);
+             //console.log('stdout: ' + data);
            });
         
            workerProcess.stderr.on('data', function (data) {
-             console.log('stderr: ' + data);
+             //console.log('stderr: ' + data);
            });
         
            workerProcess.on('close', function (code) {
-              console.log('Download Completed' + code);
+              //console.log('Download Completed' + code);
               if (callback) callback();
            });
         }

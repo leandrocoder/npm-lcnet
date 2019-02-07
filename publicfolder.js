@@ -8,6 +8,5 @@ module.exports = class PublicFolder
         this.app = express();
         this.app.use(alias, express.static(path));
         this.app.listen(port);
-        console.log(`public folder at ${port}`);
     }
 }
