@@ -1,5 +1,6 @@
 module.exports = {
-    NetUtils: require('./src/utils'),
-    WebSocket:require('./src/websocketserver'),
-    NetManager: require('./src/netmanager')
+    NetUtils: require('./utils'),
+    WebSocket:require('./websocketserver'),
+    NetManager: require('./netmanager'),
+    UDP: require('./udp')
 }

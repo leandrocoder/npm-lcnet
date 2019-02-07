@@ -1,4 +1,4 @@
-const Utils = require('./src/utils');
+const Utils = require('./utils');
 
 module.exports = class FileServe {
 
@@ -20,5 +20,4 @@ module.exports = class FileServe {
         
         this.url = "http://" + Utils.getLocalIP() + ":" + port + "/";
     }
-    
 }

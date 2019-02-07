@@ -6,7 +6,6 @@ module.exports = class UDP extends INet {
     constructor()
     {
         super();
-
     }
 
     addListener(port, callback)
@@ -15,9 +14,11 @@ module.exports = class UDP extends INet {
         {
             var ab = new ArrayBuffer(buf.length);
             var view = new Uint8Array(ab);
+
             for (var i = 0; i < buf.length; ++i) {
                 view[i] = buf[i];
             }
+
             while (ab.byteLength % 4 != 0) {
                 ab = ab.slice(1, ab.byteLength);
             }
