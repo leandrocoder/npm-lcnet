@@ -1,4 +1,3 @@
 module.exports = {
-    websocket: require('./websocketclient'),
-    utils: require('./utils')
+    WebSocket:  require('./browser-websocketclient')
 }
