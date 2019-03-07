@@ -11,8 +11,30 @@ module.exports = class UDP extends INet {
         this.maxPort = maxPort;
     }
 
-    addListener(port, callback)
+
+    static FindFreePort(port, callback)
     {
+        var http = require('http');
+
+        var server = http.createServer(function(req,res){
+            res.end('test');
+        });
+
+        server.on('listening',function(){
+            setTimeout(() => {
+                if (callback) callback();
+            })
+            console.log('ok, server is running');
+        });
+
+        server.listen(port);
+    }
+
+
+    addListener(port, callback, onConnect)
+    {
+        this.port = port;
+        
         let _bufferToString = function(buf)
         {
             var ab = new ArrayBuffer(buf.length);
@@ -32,6 +54,11 @@ module.exports = class UDP extends INet {
         let socket = dgram.createSocket('udp4');
 
         socket.on('listening', function () {
+            if (onConnect) onConnect(true);
+        }.bind(this));
+
+        socket.on('error', function () {
+            if (onConnect) onConnect(false);
         }.bind(this));
         
         socket.on('message', function (message, remote) {
@@ -48,7 +75,14 @@ module.exports = class UDP extends INet {
 
         }.bind(this));
 
-        socket.bind(port);
+        try {
+            socket.bind(port);
+        } 
+        catch (err)
+        {
+        }
+        finally {
+        }
     }
 
     requestConnection(serverName, port)

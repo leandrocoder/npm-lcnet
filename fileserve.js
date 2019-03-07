@@ -1,4 +1,5 @@
 const Utils = require('./utils');
+const fs = require('fs');
 
 module.exports = class FileServe {
 
@@ -6,6 +7,8 @@ module.exports = class FileServe {
     {
         var express = require('express');
         var app = express();
+
+        if (!fs.existsSync(servePath)) fs.mkdirSync(servePath);
         
         app.use(express.static(servePath));
         app.get('*', function(request, response) {

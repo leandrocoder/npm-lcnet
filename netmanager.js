@@ -8,6 +8,7 @@ class Room  extends EventEmitter
     constructor(name)
     {
         super();
+        this.setMaxListeners(200);
         this.name = name;
         this.clients = [];
     }
@@ -61,7 +62,8 @@ class Server extends EventEmitter {
 	
 	constructor(type, port, forwardMessages) {
 
-		super();
+        super();
+        this.setMaxListeners(200);
 
 		this.type = type.toLowerCase().trim();
 		this.port = port;

@@ -9,9 +9,12 @@ class Utils {
     {
         if (!callback) return;
 
+
         // node
         if (typeof window === 'undefined')
         {
+            console.log("node");
+            /*
             var net = require('net');
             var server = net.createServer();
             
@@ -27,14 +30,74 @@ class Utils {
                 server.close();
                 callback(true);
             });
+
+            console.log("try to connect @", port);
             
-            server.listen(port);
+            try {
+                server.listen(port);
+            }
+            catch (err) {
+                console.log("err");
+            }
+            //*/
+
+            
+            /*
+           var http = require('http');
+
+           var server = http.createServer(function(req,res){
+               res.end('test');
+           });
+
+           server.on('error', () => {
+                console.log("error detected >>>>");
+                callback(false);
+           });
+           
+           server.on('listening',function(){
+               console.log('ok, server is running');
+               callback(true);
+           });
+           
+           try {
+
+               server.listen(port);
+           }
+           catch (err)
+           {
+               console.log("err", err);
+           }
+           */
+
+           console.log("TRY HERE!!!");
+
+          let {nextAvailable} = require('node-port-check');
+
+ 
+          nextAvailable(port, '0.0.0.0').then((nextAvailablePort) => {
+           
+              callback(nextAvailablePort);
+           
+          });
         }
         else
         {
             // todo fix it
-            callback(true);
+            console.log("?????????????????")
+            callback(false);
         }
+        
+    }
+
+
+    getFreePorts(callback)
+    {
+        if (!callback) return;
+        let {getFreePorts} = require('node-port-check');
+        getFreePorts(10, '0.0.0.0').then((freePortsList) => {
+ 
+            callback(freePortsList);
+        });
     }
 
 

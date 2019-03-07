@@ -15,6 +15,7 @@
     "express": "^4.16.3",
     "fs-watch-tree": "^0.2.5",
     "md5-file": "^4.0.0",
+    "node-port-check": "^2.0.1",
     "socket.io": "^2.1.1",
     "udp": "^1.0.0",
     "websocket": "^1.0.26",
