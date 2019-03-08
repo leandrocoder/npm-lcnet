@@ -95,7 +95,7 @@ class Utils {
     {
         if (!callback) return;
         let {getFreePorts} = require('node-port-check');
-        getFreePorts(10, '0.0.0.0').then((freePortsList) => {
+        getFreePorts(30, '0.0.0.0').then((freePortsList) => {
  
             callback(freePortsList);
         });
