@@ -1,4 +1,5 @@
 const fs = require('fs');
+const PATH = require('path');
 const http = require('http');
 const url = require('url');
 const child_process = require('child_process');
@@ -185,44 +186,10 @@ class Utils {
 
     download(from, to, callback)
     {
+        /*
         if (from.indexOf("www") == 0 || from.indexOf("http") == 0)
         {
             // https://www.hacksparrow.com/using-node-js-to-download-files.html
-
-            /*
-            // console log
-            let file = fs.createWriteStream(to);
-            http.get(from, (response) => {
-                response.pipe(file);
-                if (callback) callback();
-            }).on("error", (e) => {
-                console.error(`Got error: ${e.message}`);
-                if (callback) callback(e);
-            });
-            */
-           // Function to download file using HTTP.get
-
-           
-           /*
-            var download_file_httpget = function(file_url, destPath) 
-            {
-                var options = 
-                {
-                    host: url.parse(file_url).host,
-                    port: 9002,
-                    path: url.parse(file_url).pathname
-                };
-                
-                const file = fs.createWriteStream(destPath);
-                const request = http.get(file_url, function(response) {
-                    response.pipe(file);
-                    if (callback) callback();
-                });
-                
-            }
-
-            download_file_httpget(from, to);
-            */
 
            var workerProcess = child_process.spawn('wget', ['-O', to, from]);
 
@@ -249,7 +216,20 @@ class Utils {
             } catch (err) {
                 if (callback) callback(err);
             }
-        }        
+        } 
+        */
+       
+       var download = require('download-file')
+ 
+       var options = {
+           directory: PATH.dirname(to),
+           filename: PATH.basename(to)
+       }
+        
+       download(from, options, function(err){
+           if (err) throw err
+           console.log("meow")
+       }) 
     }
 
     generateChecksum(filePath, callback)
