@@ -14,80 +14,15 @@ class Utils {
         // node
         if (typeof window === 'undefined')
         {
-            console.log("node");
-            /*
-            var net = require('net');
-            var server = net.createServer();
-            
-            server.once('error', function(err) {
-                if (err.code === 'EADDRINUSE') {
-                    // port is currently in use
-                }
-                callback(false);
+            let {nextAvailable} = require('node-port-check');
+            nextAvailable(port, '0.0.0.0').then((nextAvailablePort) => {
+                callback(nextAvailablePort);
             });
-            
-            server.once('listening', function() {
-                // close the server if listening doesn't fail
-                server.close();
-                callback(true);
-            });
-
-            console.log("try to connect @", port);
-            
-            try {
-                server.listen(port);
-            }
-            catch (err) {
-                console.log("err");
-            }
-            //*/
-
-            
-            /*
-           var http = require('http');
-
-           var server = http.createServer(function(req,res){
-               res.end('test');
-           });
-
-           server.on('error', () => {
-                console.log("error detected >>>>");
-                callback(false);
-           });
-           
-           server.on('listening',function(){
-               console.log('ok, server is running');
-               callback(true);
-           });
-           
-           try {
-
-               server.listen(port);
-           }
-           catch (err)
-           {
-               console.log("err", err);
-           }
-           */
-
-           console.log("TRY HERE!!!");
-
-          let {nextAvailable} = require('node-port-check');
-
- 
-          nextAvailable(port, '0.0.0.0').then((nextAvailablePort) => {
-           
-              callback(nextAvailablePort);
-           
-          });
         }
         else
         {
-            // todo fix it
-            console.log("?????????????????")
             callback(false);
         }
-        
     }
 
 
@@ -228,7 +163,7 @@ class Utils {
         
        download(from, options, function(err){
            if (err) throw err
-           console.log("meow")
+           if (callback) callback();
        }) 
     }
 
